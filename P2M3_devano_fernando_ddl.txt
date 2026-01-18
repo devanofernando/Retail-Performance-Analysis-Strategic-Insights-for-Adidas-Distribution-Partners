@@ -1,0 +1,46 @@
+URL DATASET: https://www.kaggle.com/datasets/heemalichaudhari/adidas-sales-dataset
+
+DDL (Data Definition Language):
+create_table = '''
+CREATE TABLE IF NOT EXISTS table_m3 (
+    "Retailer" VARCHAR,
+    "Retailer ID" VARCHAR,
+    "Invoice Date" VARCHAR,
+    "Region" VARCHAR,
+    "State" VARCHAR,
+    "City" VARCHAR,
+    "Product" VARCHAR,
+    "Price per Unit" VARCHAR,
+    "Units Sold" VARCHAR,
+    "Total Sales" VARCHAR,
+    "Operating Profit" VARCHAR,
+    "Operating Margin" VARCHAR,
+    "Sales Method" VARCHAR
+);
+'''
+cur.execute(create_table)
+conn.commit()
+
+DML : 
+data_tuples = [tuple(row) for row in df.values]
+
+insert_query = '''
+    INSERT INTO table_m3 (
+        "Retailer", "Retailer ID", "Invoice Date", "Region", "State", "City",
+        "Product", "Price per Unit", "Units Sold", "Total Sales",
+        "Operating Profit", "Operating Margin", "Sales Method"
+    ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+'''
+
+try:
+    cur.executemany(insert_query, data_tuples)
+    conn.commit() 
+except Exception as e:
+    conn.rollback()
+finally:
+    cur.close()
+    conn.close()
+
+Catatan:
+- Semua kolom disimpan sebagai VARCHAR karena raw data mengandung simbol ($, %, koma) dan format tanggal tidak standar.
+- Data dimasukkan apa adanya tanpa cleaning. 
